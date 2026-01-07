@@ -15,14 +15,61 @@
               <span>ClosetIQ</span>
             </div>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">My Wardrobe</a></li>
-                <li><a href="#">Get Outfit</a></li>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">My Wardrobe</a></li>
+              <li><a href="#">Get Outfit</a></li>
             </ul>
           </div>
         </nav>
       </div>
     </header>
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <h2>Smarter outfits from your own closet</h2>
+          <p>
+  Upload your clothes, organize your wardrobe, and get outfit suggestions using simple decision logic.
+</p>
+<button class="hero-btn">Get Started</button>
+
+
+        </div>
+      </section>
+
+      <section class="upload-section">
+        <h2>Add Clothes to Your Wardrobe</h2>
+        <form>
+          <div>
+            <label for="image-upload">Upload Image:</label>
+            <input type="file" id="image-upload" accept="image/*">
+          </div>
+
+          <div>
+            <label for="clothing-type">Clothing Type:</label>
+            <select id="clothing-type">
+              <option value="">Select Type</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+              <option value="footwear">Footwear</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="occasion">Occasion:</label>
+            <select id="occasion">
+              <option value="">Select Occasion</option>
+              <option value="casual">Casual</option>
+              <option value="formal">Formal</option>
+              <option value="festive">Festive</option>
+            </select>
+          </div>
+
+          <button type="button">Add to Wardrobe</button>
+        </form>
+
+        <div class="wardrobe-preview"></div>
+      </section>
+    </main>
     <script src="script.js"></script>
   </body>
 </html>

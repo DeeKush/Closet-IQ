@@ -34,3 +34,34 @@ header{
     color: rgb(66, 70, 70);
     text-decoration: underline;
 }
+.hero{
+    padding: 80px 20px;
+}
+.hero-content{
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+.hero-content h2{
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #222;
+}
+.hero-content p{
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+.hero-btn{
+    background-color: #333;
+    color: white;
+    padding: 14px 32px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.hero-btn:hover{
+    background-color: #555;
+}

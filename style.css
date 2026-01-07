@@ -65,3 +65,59 @@ header{
 .hero-btn:hover{
     background-color: #555;
 }
+
+.upload-section{
+    padding: 60px 20px;
+    background-color: #f9f9f9;
+}
+.upload-section h2{
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #222;
+}
+.upload-section form{
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.upload-section form div{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.upload-section label{
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+.upload-section input[type="file"],
+.upload-section select{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+}
+.upload-section select{
+    cursor: pointer;
+}
+.upload-section button{
+    background-color: #333;
+    color: white;
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+.upload-section button:hover{
+    background-color: #555;
+}
+.wardrobe-preview{
+    max-width: 500px;
+    margin: 30px auto 0;
+}

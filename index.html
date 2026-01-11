@@ -24,16 +24,28 @@
       </div>
     </header>
     <main>
-      <section class="hero hero-animate">
-        <div class="hero-content">
-          <h2 class="fade-in">Smarter outfits from your own closet</h2>
-          <p class="fade-in delay-1">
-            Stop staring at a full wardrobe wondering what to wear. ClosetIQ helps you organize your clothing and discover perfect outfit combinations for any occasion—casual, formal, or festive.
-          </p>
-          <p class="hero-subtext fade-in delay-2">
-            Upload your clothes, categorize by type and occasion, and let ClosetIQ suggest complete outfits from items you already own. No shopping required.
-          </p>
-          <button class="hero-btn fade-in delay-3" onclick="document.querySelector('.upload-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+      <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-container">
+          <div class="hero-content">
+            <h1 class="hero-headline">Your wardrobe, reimagined</h1>
+            <p class="hero-description">Discover endless outfit combinations from clothes you already own. Smart recommendations for every occasion.</p>
+            <button class="hero-cta" onclick="document.querySelector('.upload-section').scrollIntoView({behavior: 'smooth'})">Build Your Wardrobe</button>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-visual-card">
+              <div class="visual-icon">👔</div>
+              <p>Smart Organization</p>
+            </div>
+            <div class="hero-visual-card">
+              <div class="visual-icon">✨</div>
+              <p>Instant Outfits</p>
+            </div>
+            <div class="hero-visual-card">
+              <div class="visual-icon">🎯</div>
+              <p>Perfect Match</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -110,6 +122,13 @@
         <div id="outfit-result"></div>
       </section>
     </main>
+    <footer>
+      <div class="footer-content">
+        <h3>ClosetIQ</h3>
+        <p>Organize your wardrobe, discover perfect outfits</p>
+        <p class="footer-copyright">&copy; 2026 ClosetIQ. Built with care.</p>
+      </div>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>

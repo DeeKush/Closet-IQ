@@ -150,11 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return null;
     }
 
-    // Return first item from each category (deterministic)
+    // Return random item from each category
     return {
-      top: tops[0],
-      bottom: bottoms[0],
-      footwear: footwear[0]
+      top: tops[Math.floor(Math.random() * tops.length)],
+      bottom: bottoms[Math.floor(Math.random() * bottoms.length)],
+      footwear: footwear[Math.floor(Math.random() * footwear.length)]
     };
   }
 

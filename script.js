@@ -1,14 +1,32 @@
+const STORAGE_KEY = 'closetIQ-wardrobe';
 let wardrobe = [];
 
 // LocalStorage functions
 function saveToLocalStorage() {
-  localStorage.setItem('closetIQ-wardrobe', JSON.stringify(wardrobe));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(wardrobe));
 }
 
 function loadFromLocalStorage() {
-  const stored = localStorage.getItem('closetIQ-wardrobe');
+  const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
-    wardrobe = JSON.parse(stored);
+    try {
+      wardrobe = JSON.parse(stored);
+      // Migrate old items without IDs
+      let needsSave = false;
+      wardrobe = wardrobe.map((item, index) => {
+        if (!item.id) {
+          needsSave = true;
+          return { ...item, id: Date.now() + index };
+        }
+        return item;
+      });
+      if (needsSave) {
+        saveToLocalStorage();
+      }
+    } catch (e) {
+      console.error('Failed to load wardrobe data:', e);
+      wardrobe = [];
+    }
   }
 }
 
@@ -52,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-info">
           <p class="card-type"><strong>Type:</strong> ${cloth.type.charAt(0).toUpperCase() + cloth.type.slice(1)}</p>
           <p class="card-occasion"><strong>Occasion:</strong> ${cloth.occasion.charAt(0).toUpperCase() + cloth.occasion.slice(1)}</p>
-          <button class="delete-btn" data-index="${index}">Delete</button>
+          <button class="delete-btn" data-id="${cloth.id}">Delete</button>
         </div>
       `;
 
@@ -62,8 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add delete functionality
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const index = parseInt(e.target.dataset.index);
-        wardrobe.splice(index, 1);
+        const id = parseFloat(e.target.dataset.id);
+        wardrobe = wardrobe.filter(item => item.id !== id);
         saveToLocalStorage();
         renderWardrobe();
       });
@@ -91,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const cloth = {
+      id: Date.now(),
       image: previewImg.src,
       type: type,
       occasion: occasion
@@ -113,4 +132,73 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load data and render on page load
   loadFromLocalStorage();
   renderWardrobe();
+
+  // Outfit generation logic (pure function, no DOM access)
+  function generateOutfit(wardrobe, occasion) {
+    if (!occasion) return null;
+
+    // Filter items by selected occasion
+    const matchingItems = wardrobe.filter(item => item.occasion === occasion);
+
+    // Separate by type
+    const tops = matchingItems.filter(item => item.type === 'top');
+    const bottoms = matchingItems.filter(item => item.type === 'bottom');
+    const footwear = matchingItems.filter(item => item.type === 'footwear');
+
+    // Check if we have at least one of each category
+    if (tops.length === 0 || bottoms.length === 0 || footwear.length === 0) {
+      return null;
+    }
+
+    // Return first item from each category (deterministic)
+    return {
+      top: tops[0],
+      bottom: bottoms[0],
+      footwear: footwear[0]
+    };
+  }
+
+  // Render outfit display (UI only, no logic)
+  function renderOutfit(outfit) {
+    const outfitResult = document.querySelector('#outfit-result');
+    outfitResult.innerHTML = '';
+
+    if (!outfit) {
+      outfitResult.innerHTML = '<div class="outfit-message">Not enough items for this occasion. Please add at least one top, bottom, and footwear item.</div>';
+      return;
+    }
+
+    const outfitDisplay = document.createElement('div');
+    outfitDisplay.className = 'outfit-display';
+
+    // Render each piece in order: top, bottom, footwear
+    ['top', 'bottom', 'footwear'].forEach(type => {
+      const item = outfit[type];
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'outfit-item';
+      itemDiv.innerHTML = `
+        <img src="${item.image}" alt="${type}">
+        <div class="outfit-item-label">${type}</div>
+      `;
+      outfitDisplay.appendChild(itemDiv);
+    });
+
+    outfitResult.appendChild(outfitDisplay);
+  }
+
+  // Get Outfit button handler
+  const generateOutfitBtn = document.querySelector('#generate-outfit-btn');
+  const outfitOccasionSelect = document.querySelector('#outfit-occasion');
+
+  generateOutfitBtn.addEventListener('click', () => {
+    const selectedOccasion = outfitOccasionSelect.value;
+
+    if (!selectedOccasion) {
+      alert('Please select an occasion first!');
+      return;
+    }
+
+    const outfit = generateOutfit(wardrobe, selectedOccasion);
+    renderOutfit(outfit);
+  });
 });

@@ -17,7 +17,7 @@
             <ul>
               <li><a href="#">Home</a></li>
               <li><a href="#">My Wardrobe</a></li>
-              <li><a href="#">Get Outfit</a></li>
+              <li><a href="#" onclick="document.querySelector('.outfit-section').scrollIntoView({behavior: 'smooth'}); return false;">Get Outfit</a></li>
             </ul>
           </div>
         </nav>
@@ -30,7 +30,7 @@
           <p>
   Upload your clothes, organize your wardrobe, and get outfit suggestions using simple decision logic.
 </p>
-<button class="hero-btn">Get Started</button>
+<button class="hero-btn" onclick="document.querySelector('.upload-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
 
 
         </div>
@@ -73,8 +73,22 @@
       <section class="wardrobe-gallery">
         <h2>My Wardrobe</h2>
         <div id="wardrobe-items" class="wardrobe-grid">
-          <p class="empty-message">No items yet. Start adding clothes to your wardrobe!</p>
         </div>
+      </section>
+
+      <section class="outfit-section">
+        <h2>Get Outfit Recommendation</h2>
+        <div class="outfit-controls">
+          <label for="outfit-occasion">Select Occasion:</label>
+          <select id="outfit-occasion">
+            <option value="">Choose Occasion</option>
+            <option value="casual">Casual</option>
+            <option value="formal">Formal</option>
+            <option value="festive">Festive</option>
+          </select>
+          <button id="generate-outfit-btn">Get Outfit</button>
+        </div>
+        <div id="outfit-result"></div>
       </section>
     </main>
     <script src="script.js"></script>

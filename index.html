@@ -24,15 +24,34 @@
       </div>
     </header>
     <main>
-      <section class="hero">
+      <section class="hero hero-animate">
         <div class="hero-content">
-          <h2>Smarter outfits from your own closet</h2>
-          <p>
-  Upload your clothes, organize your wardrobe, and get outfit suggestions using simple decision logic.
-</p>
-<button class="hero-btn" onclick="document.querySelector('.upload-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+          <h2 class="fade-in">Smarter outfits from your own closet</h2>
+          <p class="fade-in delay-1">
+            Stop staring at a full wardrobe wondering what to wear. ClosetIQ helps you organize your clothing and discover perfect outfit combinations for any occasion—casual, formal, or festive.
+          </p>
+          <p class="hero-subtext fade-in delay-2">
+            Upload your clothes, categorize by type and occasion, and let ClosetIQ suggest complete outfits from items you already own. No shopping required.
+          </p>
+          <button class="hero-btn fade-in delay-3" onclick="document.querySelector('.upload-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+        </div>
+      </section>
 
-
+      <section class="how-it-works scroll-reveal">
+        <h2>How It Works</h2>
+        <div class="steps">
+          <div class="step step-card">
+            <h3>1. Add Your Clothes</h3>
+            <p>Upload photos of your clothing items and categorize them by type (top, bottom, footwear) and occasion (casual, formal, festive).</p>
+          </div>
+          <div class="step step-card">
+            <h3>2. View Your Wardrobe</h3>
+            <p>Browse your virtual wardrobe with all your items organized in one place. Edit or delete items anytime.</p>
+          </div>
+          <div class="step step-card">
+            <h3>3. Get Outfit Suggestions</h3>
+            <p>Select an occasion and instantly get a complete outfit recommendation—top, bottom, and footwear perfectly matched.</p>
+          </div>
         </div>
       </section>
 

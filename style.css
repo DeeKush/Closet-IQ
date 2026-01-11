@@ -3,11 +3,76 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+body{
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    position: relative;
+}
+
+body::before{
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.fade-in.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.fade-in.delay-2 {
+    animation-delay: 0.4s;
+}
+
+.fade-in.delay-3 {
+    animation-delay: 0.6s;
+}
+
+.scroll-reveal {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.8s;
+}
+
 header{
-    background-color: rgb(226, 223, 223);
-    border-bottom: 1px solid #ddd;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
     padding-top: 5px;
     padding-bottom: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 .navbar{
     display: flex;
@@ -19,7 +84,10 @@ header{
 .logo{
     font-size: 1.4rem;
     font-weight: 700;
-
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 .navbar ul{
     list-style: none;
@@ -27,15 +95,43 @@ header{
     gap: 20px;
 }
 .navbar a{
-    color: black;
+    color: #333;
     text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+.navbar a::after{
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
 }
 .navbar a:hover{
-    color: rgb(66, 70, 70);
-    text-decoration: underline;
+    color: #667eea;
+}
+.navbar a:hover::after{
+    width: 100%;
 }
 .hero{
-    padding: 80px 20px;
+    padding: 100px 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.85) 100%);
+    position: relative;
+    overflow: hidden;
+}
+.hero::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="%23667eea" opacity="0.03"/></svg>');
+    opacity: 0.5;
+    pointer-events: none;
 }
 .hero-content{
     max-width: 800px;
@@ -43,9 +139,14 @@ header{
     text-align: center;
 }
 .hero-content h2{
-    font-size: 3rem;
+    font-size: 3.2rem;
     margin-bottom: 20px;
     color: #222;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
 }
 .hero-content p{
     color: #666;
@@ -54,27 +155,82 @@ header{
     margin-bottom: 30px;
 }
 .hero-btn{
-    background-color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 14px 32px;
-    font-size: 1rem;
+    padding: 16px 40px;
+    font-size: 1.05rem;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 .hero-btn:hover{
-    background-color: #555;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+.hero-subtext{
+    font-size: 1rem;
+    color: #888;
+    margin-top: 10px;
+}
+
+.how-it-works{
+    padding: 80px 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+.how-it-works h2{
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: #222;
+    font-weight: 700;
+}
+.steps{
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+.step-card{
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+.step-card:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+.step{
+    text-align: center;
+}
+.step h3{
+    font-size: 1.4rem;
+    color: #667eea;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+.step p{
+    color: #666;
+    line-height: 1.7;
+    font-size: 0.95rem;
 }
 
 .upload-section{
-    padding: 60px 20px;
-    background-color: #f9f9f9;
+    padding: 80px 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
 }
 .upload-section h2{
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 30px;
+    font-size: 2.2rem;
+    margin-bottom: 40px;
     color: #222;
+    font-weight: 700;
 }
 .upload-section form{
     max-width: 500px;
@@ -82,6 +238,10 @@ header{
     display: flex;
     flex-direction: column;
     gap: 20px;
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
 }
 .upload-section form div{
     display: flex;
@@ -95,27 +255,37 @@ header{
 }
 .upload-section input[type="file"],
 .upload-section select{
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 8px;
     font-size: 1rem;
     background-color: white;
+    transition: all 0.3s ease;
+}
+.upload-section input[type="file"]:focus,
+.upload-section select:focus{
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 .upload-section select{
     cursor: pointer;
 }
 .upload-section button{
-    background-color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 12px 28px;
-    font-size: 0.95rem;
+    padding: 14px 32px;
+    font-size: 1rem;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-top: 10px;
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 .upload-section button:hover{
-    background-color: #555;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 .wardrobe-preview{
     max-width: 500px;
@@ -131,14 +301,15 @@ header{
 }
 
 .wardrobe-gallery{
-    padding: 60px 20px;
-    background-color: white;
+    padding: 80px 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
 }
 .wardrobe-gallery h2{
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 40px;
+    font-size: 2.2rem;
+    margin-bottom: 50px;
     color: #222;
+    font-weight: 700;
 }
 .wardrobe-grid{
     max-width: 1200px;
@@ -156,14 +327,15 @@ header{
 }
 .wardrobe-card{
     background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.4s ease;
+    box-shadow: 0 3px 15px rgba(102, 126, 234, 0.08);
 }
 .wardrobe-card:hover{
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
 }
 .wardrobe-card img{
     width: 100%;
@@ -182,36 +354,43 @@ header{
 }
 .delete-btn{
     width: 100%;
-    background-color: #d9534f;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     padding: 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 0.9rem;
     margin-top: 10px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 .delete-btn:hover{
-    background-color: #c9302c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
 }
 
 .outfit-section{
-    padding: 60px 20px;
-    background-color: #f9f9f9;
+    padding: 80px 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
 }
 .outfit-section h2{
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 30px;
+    font-size: 2.2rem;
+    margin-bottom: 40px;
     color: #222;
+    font-weight: 700;
 }
 .outfit-controls{
     max-width: 500px;
-    margin: 0 auto 40px;
+    margin: 0 auto 50px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
 }
 .outfit-controls label{
     font-weight: 600;
@@ -219,24 +398,33 @@ header{
     font-size: 0.95rem;
 }
 .outfit-controls select{
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 8px;
     font-size: 1rem;
     background-color: white;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+.outfit-controls select:focus{
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 #generate-outfit-btn{
-    background-color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 12px 28px;
-    font-size: 0.95rem;
+    padding: 14px 32px;
+    font-size: 1rem;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 #generate-outfit-btn:hover{
-    background-color: #555;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 #outfit-result{
     max-width: 1000px;
@@ -245,35 +433,44 @@ header{
 .outfit-display{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    border: 2px solid #333;
+    gap: 25px;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
 }
 .outfit-item{
     text-align: center;
+    transition: transform 0.3s ease;
+}
+.outfit-item:hover{
+    transform: scale(1.05);
 }
 .outfit-item img{
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border-radius: 10px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
     margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+.outfit-item img:hover{
+    border-color: #667eea;
 }
 .outfit-item-label{
     font-weight: 600;
-    color: #333;
+    color: #667eea;
     text-transform: capitalize;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 .outfit-message{
     text-align: center;
-    padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    border: 2px dashed #ccc;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    border: 2px dashed rgba(102, 126, 234, 0.3);
     color: #666;
     font-size: 1rem;
 }

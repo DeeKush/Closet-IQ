@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Wardrobe - Closet IQ</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="nav">
+        <nav>
+          <div class="navbar">
+            <div class="logo">
+              <span>ClosetIQ</span>
+            </div>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="wardrobe.html">My Wardrobe</a></li>
+              <li><a href="outfit.html">Get Outfit</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="upload-section">
+        <h2>Add Clothes to Your Wardrobe</h2>
+        <form>
+          <div>
+            <label for="image-upload">Upload Image:</label>
+            <input type="file" id="image-upload" accept="image/*">
+          </div>
+
+          <div>
+            <label for="clothing-type">Clothing Type:</label>
+            <select id="clothing-type">
+              <option value="">Select Type</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+              <option value="footwear">Footwear</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="occasion">Occasion:</label>
+            <select id="occasion">
+              <option value="">Select Occasion</option>
+              <option value="casual">Casual</option>
+              <option value="formal">Formal</option>
+              <option value="festive">Festive</option>
+            </select>
+          </div>
+
+          <button type="button" id = "addToWardrobe">Add to Wardrobe</button>
+        </form>
+
+        <div class="wardrobe-preview"></div>
+      </section>
+
+      <section class="wardrobe-gallery">
+        <h2>My Wardrobe</h2>
+        <div id="wardrobe-items" class="wardrobe-grid">
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-content">
+        <h3>ClosetIQ</h3>
+        <p>Organize your wardrobe, discover perfect outfits</p>
+        <p class="footer-copyright">&copy; 2026 ClosetIQ. Built with care.</p>
+      </div>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>

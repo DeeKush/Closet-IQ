@@ -99,6 +99,7 @@ header{
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
+    font-weight: 500;
 }
 .navbar a::after{
     content: '';
@@ -112,6 +113,16 @@ header{
 }
 .navbar a:hover{
     color: #667eea;
+}
+.navbar a:hover::after{
+    width: 100%;
+}
+.navbar a.active{
+    color: #667eea;
+    font-weight: 700;
+}
+.navbar a.active::after{
+    width: 100%;
 }
 .navbar a:hover::after{
     width: 100%;

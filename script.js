@@ -33,8 +33,30 @@ function loadFromLocalStorage() {
 // Load wardrobe data immediately on all pages
 loadFromLocalStorage();
 
+// Set active navbar link based on current page
+function setActiveNavLink() {
+  const currentPage = window.location.pathname;
+  const navLinks = document.querySelectorAll('.navbar a');
+  
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    
+    // Remove active class from all links
+    link.classList.remove('active');
+    
+    // Check if current page matches the link
+    if (currentPage.endsWith(href) || 
+        (href === 'index.html' && (currentPage.endsWith('/') || currentPage.endsWith('index.html')))) {
+      link.classList.add('active');
+    }
+  });
+}
+
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
+  // Set active navbar link
+  setActiveNavLink();
+  
   // Get DOM elements
   const imageInput = document.querySelector('#image-upload');
   const previewContainer = document.querySelector('.wardrobe-preview');

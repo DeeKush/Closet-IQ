@@ -30,30 +30,25 @@ function loadFromLocalStorage() {
   }
 }
 
+// Load wardrobe data immediately on all pages
+loadFromLocalStorage();
+
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-  // Image preview
+  // Get DOM elements
   const imageInput = document.querySelector('#image-upload');
   const previewContainer = document.querySelector('.wardrobe-preview');
   const wardrobeGrid = document.querySelector('#wardrobe-items');
-
-  imageInput.addEventListener('change', () => {
-    const file = imageInput.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      previewContainer.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = reader.result;
-      img.alt = 'Preview';
-      previewContainer.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  });
+  const addToWardrobeBtn = document.querySelector('#addToWardrobe');
+  const clothingTypeSelect = document.querySelector('#clothing-type');
+  const occasionSelect = document.querySelector('#occasion');
+  const generateOutfitBtn = document.querySelector('#generate-outfit-btn');
+  const outfitOccasionSelect = document.querySelector('#outfit-occasion');
 
   // Render wardrobe dynamically
   function renderWardrobe() {
+    if (!wardrobeGrid) return;
+
     wardrobeGrid.innerHTML = '';
 
     if (wardrobe.length === 0) {
@@ -88,50 +83,67 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Capture metadata
-  const addToWardrobeBtn = document.querySelector('#addToWardrobe');
-  const clothingTypeSelect = document.querySelector('#clothing-type');
-  const occasionSelect = document.querySelector('#occasion');
+  // Image upload and preview (wardrobe.html only)
+  if (imageInput && previewContainer) {
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (!file) return;
 
-  addToWardrobeBtn.addEventListener('click', () => {
-    const previewImg = previewContainer.querySelector('img');
-    if (!previewImg) {
-      alert('Please upload an image first!');
-      return;
-    }
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewContainer.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = reader.result;
+        img.alt = 'Preview';
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
-    const type = clothingTypeSelect.value;
-    const occasion = occasionSelect.value;
+  // Add to wardrobe functionality (wardrobe.html only)
+  if (addToWardrobeBtn && clothingTypeSelect && occasionSelect && previewContainer) {
+    addToWardrobeBtn.addEventListener('click', () => {
+      const previewImg = previewContainer.querySelector('img');
+      if (!previewImg) {
+        alert('Please upload an image first!');
+        return;
+      }
 
-    if (!type || !occasion) {
-      alert('Please select both clothing type and occasion!');
-      return;
-    }
+      const type = clothingTypeSelect.value;
+      const occasion = occasionSelect.value;
 
-    const cloth = {
-      id: Date.now(),
-      image: previewImg.src,
-      type: type,
-      occasion: occasion
-    };
+      if (!type || !occasion) {
+        alert('Please select both clothing type and occasion!');
+        return;
+      }
 
-    wardrobe.push(cloth);
-    saveToLocalStorage();
+      const cloth = {
+        id: Date.now(),
+        image: previewImg.src,
+        type: type,
+        occasion: occasion
+      };
+
+      wardrobe.push(cloth);
+      saveToLocalStorage();
+      renderWardrobe();
+
+      // Clear form and preview
+      imageInput.value = '';
+      clothingTypeSelect.value = '';
+      occasionSelect.value = '';
+      previewContainer.innerHTML = '';
+
+      // Show success feedback
+      alert('Item added to wardrobe successfully!');
+    });
+  }
+
+  // Render wardrobe if grid exists (wardrobe.html only)
+  if (wardrobeGrid) {
     renderWardrobe();
-
-    // Clear form and preview
-    imageInput.value = '';
-    clothingTypeSelect.value = '';
-    occasionSelect.value = '';
-    previewContainer.innerHTML = '';
-
-    // Show success feedback
-    alert('Item added to wardrobe successfully!');
-  });
-
-  // Load data and render on page load
-  loadFromLocalStorage();
-  renderWardrobe();
+  }
 
   // Outfit generation logic (pure function, no DOM access)
   function generateOutfit(wardrobe, occasion) {
@@ -161,6 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render outfit display (UI only, no logic)
   function renderOutfit(outfit) {
     const outfitResult = document.querySelector('#outfit-result');
+    if (!outfitResult) return;
+
     outfitResult.innerHTML = '';
 
     if (!outfit) {
@@ -186,19 +200,18 @@ document.addEventListener('DOMContentLoaded', () => {
     outfitResult.appendChild(outfitDisplay);
   }
 
-  // Get Outfit button handler
-  const generateOutfitBtn = document.querySelector('#generate-outfit-btn');
-  const outfitOccasionSelect = document.querySelector('#outfit-occasion');
+  // Get Outfit button handler (outfit.html only)
+  if (generateOutfitBtn && outfitOccasionSelect) {
+    generateOutfitBtn.addEventListener('click', () => {
+      const selectedOccasion = outfitOccasionSelect.value;
 
-  generateOutfitBtn.addEventListener('click', () => {
-    const selectedOccasion = outfitOccasionSelect.value;
+      if (!selectedOccasion) {
+        alert('Please select an occasion first!');
+        return;
+      }
 
-    if (!selectedOccasion) {
-      alert('Please select an occasion first!');
-      return;
-    }
-
-    const outfit = generateOutfit(wardrobe, selectedOccasion);
-    renderOutfit(outfit);
-  });
+      const outfit = generateOutfit(wardrobe, selectedOccasion);
+      renderOutfit(outfit);
+    });
+  }
 });

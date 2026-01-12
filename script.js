@@ -1,5 +1,78 @@
+import { GEMINI_API_KEY } from './config.js';
+
 const STORAGE_KEY = 'closetIQ-wardrobe';
 let wardrobe = [];
+
+// Gemini API wrapper for AI-powered outfit recommendations
+async function getOutfitFromAI(wardrobe, occasion) {
+  // Prepare clean wardrobe data (without base64 images to reduce payload)
+  const cleanWardrobe = wardrobe.map(item => ({
+    id: item.id,
+    type: item.type,
+    occasion: item.occasion
+  }));
+
+  const prompt = `You are a fashion assistant for ClosetIQ, a wardrobe management app.
+
+TASK: Select ONE complete outfit from the user's existing wardrobe for the "${occasion}" occasion.
+
+WARDROBE DATA:
+${JSON.stringify(cleanWardrobe, null, 2)}
+
+RULES:
+1. Select items ONLY from the wardrobe above
+2. Select exactly ONE item from each type: top, bottom, footwear
+3. ALL selected items MUST have occasion="${occasion}"
+4. Respond with VALID JSON ONLY, no other text
+
+REQUIRED JSON FORMAT:
+{
+  "top": "item_id_here",
+  "bottom": "item_id_here",
+  "footwear": "item_id_here",
+  "reason": "Short explanation of why these items work together"
+}
+
+If insufficient items exist, respond with:
+{
+  "error": "Not enough items for this occasion"
+}`;
+
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+
+  const requestBody = {
+    contents: [{
+      role: 'user',
+      parts: [{
+        text: prompt
+      }]
+    }],
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 512,
+      topP: 0.9,
+      topK: 40
+    }
+  };
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+  const textResponse = data.candidates[0].content.parts[0].text;
+  
+  return textResponse;
+}
 
 // LocalStorage functions
 function saveToLocalStorage() {
@@ -167,40 +240,80 @@ document.addEventListener('DOMContentLoaded', () => {
     renderWardrobe();
   }
 
-  // Outfit generation logic (pure function, no DOM access)
-  function generateOutfit(wardrobe, occasion) {
-    if (!occasion) return null;
+  // Parse Gemini JSON response safely
+  function parseGeminiResponse(textResponse) {
+    // Remove markdown code blocks if present
+    let cleaned = textResponse.trim();
+    if (cleaned.startsWith('```json')) {
+      cleaned = cleaned.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    } else if (cleaned.startsWith('```')) {
+      cleaned = cleaned.replace(/```\n?/g, '');
+    }
+    
+    try {
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.error('Failed to parse Gemini response:', textResponse);
+      throw new Error('Invalid response format from AI');
+    }
+  }
 
-    // Filter items by selected occasion
+  // Generate outfit using AI
+  async function generateAIOutfit(wardrobe, occasion) {
+    if (!occasion) {
+      return { error: 'Please select an occasion' };
+    }
+
+    // Check if we have items for this occasion
     const matchingItems = wardrobe.filter(item => item.occasion === occasion);
-
-    // Separate by type
     const tops = matchingItems.filter(item => item.type === 'top');
     const bottoms = matchingItems.filter(item => item.type === 'bottom');
     const footwear = matchingItems.filter(item => item.type === 'footwear');
 
-    // Check if we have at least one of each category
     if (tops.length === 0 || bottoms.length === 0 || footwear.length === 0) {
-      return null;
+      return { error: 'Not enough items for this occasion. Add at least one top, bottom, and footwear.' };
     }
 
-    // Return random item from each category
-    return {
-      top: tops[Math.floor(Math.random() * tops.length)],
-      bottom: bottoms[Math.floor(Math.random() * bottoms.length)],
-      footwear: footwear[Math.floor(Math.random() * footwear.length)]
-    };
+    try {
+      const aiResponse = await getOutfitFromAI(wardrobe, occasion);
+      const parsed = parseGeminiResponse(aiResponse);
+      
+      if (parsed.error) {
+        return { error: parsed.error };
+      }
+
+      // Find actual items from wardrobe by ID
+      const topItem = wardrobe.find(item => item.id == parsed.top);
+      const bottomItem = wardrobe.find(item => item.id == parsed.bottom);
+      const footwearItem = wardrobe.find(item => item.id == parsed.footwear);
+
+      if (!topItem || !bottomItem || !footwearItem) {
+        console.error('AI selected invalid IDs:', parsed);
+        return { error: 'AI selected items that do not exist in wardrobe' };
+      }
+
+      return {
+        top: topItem,
+        bottom: bottomItem,
+        footwear: footwearItem,
+        reason: parsed.reason || 'AI-selected outfit'
+      };
+    } catch (error) {
+      console.error('AI outfit generation failed:', error);
+      return { error: `AI service error: ${error.message}` };
+    }
   }
 
-  // Render outfit display (UI only, no logic)
+  // Render outfit display with AI reasoning
   function renderOutfit(outfit) {
     const outfitResult = document.querySelector('#outfit-result');
     if (!outfitResult) return;
 
     outfitResult.innerHTML = '';
 
-    if (!outfit) {
-      outfitResult.innerHTML = '<div class="outfit-message">Not enough items for this occasion. Please add at least one top, bottom, and footwear item.</div>';
+    // Handle error messages
+    if (outfit.error) {
+      outfitResult.innerHTML = `<div class="outfit-message error-message">${outfit.error}</div>`;
       return;
     }
 
@@ -220,20 +333,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     outfitResult.appendChild(outfitDisplay);
+
+    // Add AI reasoning if available
+    if (outfit.reason) {
+      const reasonDiv = document.createElement('div');
+      reasonDiv.className = 'outfit-reasoning';
+      reasonDiv.innerHTML = `<strong>AI Recommendation:</strong> ${outfit.reason}`;
+      outfitResult.appendChild(reasonDiv);
+    }
   }
 
   // Get Outfit button handler (outfit.html only)
   if (generateOutfitBtn && outfitOccasionSelect) {
-    generateOutfitBtn.addEventListener('click', () => {
+    generateOutfitBtn.addEventListener('click', async () => {
       const selectedOccasion = outfitOccasionSelect.value;
+      const outfitResult = document.querySelector('#outfit-result');
 
       if (!selectedOccasion) {
-        alert('Please select an occasion first!');
+        outfitResult.innerHTML = '<div class="outfit-message error-message">Please select an occasion first!</div>';
         return;
       }
 
-      const outfit = generateOutfit(wardrobe, selectedOccasion);
+      // Show loading state
+      outfitResult.innerHTML = '<div class="outfit-message">Generating outfit with AI...</div>';
+      generateOutfitBtn.disabled = true;
+
+      const outfit = await generateAIOutfit(wardrobe, selectedOccasion);
       renderOutfit(outfit);
+
+      generateOutfitBtn.disabled = false;
     });
   }
 });

@@ -1,6 +1,10 @@
 import { GEMINI_API_KEY } from './config.js';
 
 const STORAGE_KEY = 'closetIQ-wardrobe';
+// Gemini API configuration
+// Using v1beta API endpoint which supports Gemini 1.5 models
+const GEMINI_BASE_URL = 'https://generativeai.googleapis.com/v1beta';
+const GEMINI_MODEL = 'gemini-1.5-flash';
 let wardrobe = [];
 
 // Gemini API wrapper for AI-powered outfit recommendations
@@ -38,7 +42,7 @@ If insufficient items exist, respond with:
   "error": "Not enough items for this occasion"
 }`;
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+  const apiUrl = `${GEMINI_BASE_URL}/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
   const requestBody = {
     contents: [{
@@ -64,8 +68,9 @@ If insufficient items exist, respond with:
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    console.error('Gemini API Error:', errorData);
+    throw new Error('Unable to connect to AI service');
   }
 
   const data = await response.json();
